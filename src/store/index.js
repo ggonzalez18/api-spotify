@@ -1,15 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
+import Axios from 'axios'
 
 Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
-        token: undefined
+        token: null,
+        albums: []
     },
     mutations: {
         SET_TOKEN(state, token) {
             state.token = token
+        },
+        SET_ALBUMS(state, albums) {
+            state.albums = albums
         }
     },
     actions: {
@@ -28,13 +32,21 @@ export default new Vuex.Store({
                 },
                 data: urlencoded
             };
-            axios(config)
+            Axios(config)
                 .then(function(response) {
-                    commit('SET_TOKEN', response.data.acces_token)
+                    commit('SET_TOKEN', response.data.access_token)
                 })
                 .catch(function(error) {
                     console.log(error);
                 });
+        },
+        getAlbums({ commit, state }, id) {
+            const config = {
+                headers: { Authorization: `Bearer ${state.token}` }
+            }
+            Axios.get('https://api.spotify.com/v1/albums/?ids=' + id, config).then((response) => {
+                commit('SET_ALBUMS', response.data)
+            })
         }
     },
     modules: {}

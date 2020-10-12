@@ -22,7 +22,7 @@ export default {
     //
   }),
   created() {
-    this.getToken()
+    this.setToken()
   },
   methods: {
     ...mapActions(['setToken'])
